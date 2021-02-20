@@ -21,11 +21,59 @@ const process = (ctx, config) => {
   const { type, value, title, transform = [] } = config
 
   // handle deprecated properties: unit, scale
-  if (config.scale) {
-    if (config.unit) {
-      transform.unshift({ type: "stringToSpacedSuffixedString", suffix: config.unit })
+  //TODO: resolve scale value in `transform.js`
+  if(config.scale && config.scaleDown){
+    
+    let _scale;
+
+    try {
+      _scale = (0, _utils.resolveValue)(ctx, config.scale);
+    } catch (err) {
+      ctx.recordError(`scale value is not valid: ${config.scale}`);
     }
-    transform.unshift({ type: "intToScaledIntString", scale: config.scale })
+
+    if(typeof _scale !== 'undefined'){
+      config.scale = _scale;
+    }
+
+    if (config.unit) {
+      transform.unshift({
+        type: "stringToSpacedSuffixedString",
+        suffix: config.unit
+      });
+    }
+
+    transform.unshift({
+      type: "intToScaledDownIntString",
+      scale: config.scale
+    });
+  }
+
+  if (config.scale && !config.scaleDown) {
+
+    let _scale;
+
+    try {
+      _scale = (0, _utils.resolveValue)(ctx, config.scale);
+    } catch (err) {
+      ctx.recordError(`scale value is not valid: ${config.scale}`);
+    }
+
+    if(typeof _scale !== 'undefined'){
+      config.scale = _scale;
+    }
+
+    if (config.unit) {
+      transform.unshift({
+        type: "stringToSpacedSuffixedString",
+        suffix: config.unit
+      });
+    }
+
+    transform.unshift({
+      type: "intToScaledIntString",
+      scale: config.scale
+    });
   }
 
   if (!type || !value || !title) {

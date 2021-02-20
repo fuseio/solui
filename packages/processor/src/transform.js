@@ -32,6 +32,10 @@ export const transformValue = (ctx, value, transform = []) => {
           value = intToDecimal(value, parseInt(t.scale, 10)).toString()
           break
         }
+        case 'intToScaledDownIntString':{
+          value = intToDecimal(value, parseInt(-1 * t.scale, 10)).toString();
+          break;
+        }
         case 'intToHexString': {
           value = intToDecimal(value).toHex()
           break
