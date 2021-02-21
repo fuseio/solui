@@ -96,6 +96,13 @@ const _finalizeSingleInputValue = (ctx, value, config) => {
 
   switch (type) {
     case 'int':
+      if(config.scale){
+        let _scale;
+        _scale = (0 , resolveValue)(ctx , config.scale);
+        if(typeof _scale !== 'undefined'){
+          config.scale = _scale;
+        }
+      }
       const fv = deriveDecimalVal(value, config)
       return (fv ? fv.toString(10) : fv)
     case 'bool':
